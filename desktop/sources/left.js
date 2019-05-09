@@ -1,45 +1,47 @@
 'use strict'
 
-const Theme = require('./scripts/lib/theme')
-const Controller = require('./scripts/lib/controller')
-const Dictionary = require('./scripts/dictionary')
-const Operator = require('./scripts/operator')
-const Navi = require('./scripts/navi')
-const Stats = require('./scripts/stats')
-const Go = require('./scripts/go')
-const Project = require('./scripts/project')
-const Reader = require('./scripts/reader')
-const Insert = require('./scripts/insert')
-const Font = require('./scripts/font')
+import Theme from './scripts/lib/theme'
+import Controller from './scripts/lib/controller'
+import Dictionary from './scripts/dictionary'
+import Operator from './scripts/operator'
+import Navi from './scripts/navi'
+import Stats from './scripts/stats'
+import Go from './scripts/go'
+import Project from './scripts/project'
+import Reader from './scripts/reader'
+import Insert from './scripts/insert'
+import Font from './scripts/font'
 
 const EOL = '\n'
 
-function Left () {
-  this.theme = new Theme()
-  this.controller = new Controller()
-  this.dictionary = new Dictionary()
-  this.operator = new Operator()
-  this.navi = new Navi()
-  this.stats = new Stats()
-  this.go = new Go()
-  this.project = new Project()
-  this.reader = new Reader()
-  this.insert = new Insert()
-  this.font = new Font()
+class Left {
+  constructor () {
+    this.theme = new Theme()
+    this.controller = new Controller()
+    this.dictionary = new Dictionary()
+    this.operator = new Operator()
+    this.navi = new Navi()
+    this.stats = new Stats()
+    this.go = new Go()
+    this.project = new Project()
+    this.reader = new Reader()
+    this.insert = new Insert()
+    this.font = new Font()
 
-  this.textarea_el = document.createElement('textarea')
-  this.drag_el = document.createElement('drag')
+    this.textarea_el = document.createElement('textarea')
+    this.drag_el = document.createElement('drag')
 
-  this.selection = { word: null, index: 1 }
+    this.selection = { word: null, index: 1 }
 
-  this.words_count = null
-  this.lines_count = null
-  this.chars_count = null
-  this.suggestion = null
-  this.synonyms = null
-  this.last_char = 's' // this is not a typo. it's bad code, but it has to be a length one string
+    this.words_count = null
+    this.lines_count = null
+    this.chars_count = null
+    this.suggestion = null
+    this.synonyms = null
+    this.last_char = 's' // this is not a typo. it's bad code, but it has to be a length one string
+  }
 
-  this.install = function (host = document.body) {
+  install (host = document.body) {
     this.navi.install(host)
     this.stats.install(host)
     this.operator.install(host)
@@ -56,12 +58,16 @@ function Left () {
     this.textarea_el.setAttribute('type', 'text')
 
     this.textarea_el.addEventListener('scroll', () => {
-      if (!this.reader.active) { this.stats.on_scroll() }
+      if (!this.reader.active) {
+        this.stats.on_scroll()
+      }
     })
 
     // Trigger update when selection changes
-    this.textarea_el.addEventListener('select', (e) => {
-      if (!this.reader.active) { this.update() }
+    this.textarea_el.addEventListener('select', e => {
+      if (!this.reader.active) {
+        this.update()
+      }
     })
 
     this.textarea_el.addEventListener('input', () => {
@@ -71,7 +77,7 @@ function Left () {
     this.theme.install(host)
   }
 
-  this.start = function () {
+  start () {
     this.theme.start()
     this.font.start()
     this.dictionary.start()
@@ -86,11 +92,14 @@ function Left () {
     this.update()
   }
 
-  this.update = function (hard = false) {
+  update (hard = false) {
     let nextChar = left.textarea_el.value.substr(left.textarea_el.selectionEnd, 1)
 
     left.selection.word = this.active_word()
-    left.suggestion = (nextChar === '' || nextChar === ' ' || nextChar === EOL) ? left.dictionary.find_suggestion(left.selection.word) : null
+    left.suggestion =
+      nextChar === '' || nextChar === ' ' || nextChar === EOL
+        ? left.dictionary.find_suggestion(left.selection.word)
+        : null
     left.synonyms = left.dictionary.find_synonym(left.selection.word)
     left.selection.url = this.active_url()
 
@@ -101,15 +110,19 @@ function Left () {
 
   //
 
-  this.select_autocomplete = function () {
-    if (left.selection.word.trim() !== '' && left.suggestion && left.suggestion.toLowerCase() !== left.active_word().toLowerCase()) {
+  select_autocomplete () {
+    if (
+      left.selection.word.trim() !== '' &&
+      left.suggestion &&
+      left.suggestion.toLowerCase() !== left.active_word().toLowerCase()
+    ) {
       left.autocomplete()
     } else {
       left.inject('\u00a0\u00a0')
     }
   }
 
-  this.select_synonym = function () {
+  select_synonym () {
     if (left.synonyms) {
       left.replace_active_word_with(left.synonyms[left.selection.index % left.synonyms.length])
       left.stats.update()
@@ -117,16 +130,16 @@ function Left () {
     }
   }
 
-  this.select = function (from, to) {
+  select (from, to) {
     left.textarea_el.setSelectionRange(from, to)
   }
 
-  this.select_word = function (target) {
+  select_word (target) {
     let from = left.textarea_el.value.split(target)[0].length
     this.select(from, from + target.length)
   }
 
-  this.select_line = function (id) {
+  select_line (id) {
     let lineArr = this.textarea_el.value.split(EOL, parseInt(id) + 1)
     let arrJoin = lineArr.join(EOL)
 
@@ -136,26 +149,26 @@ function Left () {
     this.select(from, to)
   }
 
-  this.reload = function (force = false) {
+  reload (force = false) {
     this.project.page().reload(force)
     this.load(this.project.page().text)
   }
 
-  this.load = function (text) {
+  load (text) {
     this.textarea_el.value = text || ''
     this.update()
   }
 
   // Location tools
 
-  this.selected = function () {
+  selected () {
     let from = this.textarea_el.selectionStart
     let to = this.textarea_el.selectionEnd
     let length = to - from
     return this.textarea_el.value.substr(from, length)
   }
 
-  this.active_word_location = function (position = left.textarea_el.selectionEnd) {
+  active_word_location (position = left.textarea_el.selectionEnd) {
     let from = position - 1
 
     // Find beginning of word
@@ -182,23 +195,23 @@ function Left () {
     return { from: from, to: to }
   }
 
-  this.active_line_id = function () {
+  active_line_id () {
     let segments = left.textarea_el.value.substr(0, left.textarea_el.selectionEnd).split(EOL)
     return segments.length - 1
   }
 
-  this.active_line = function () {
+  active_line () {
     let text = left.textarea_el.value
     let lines = text.split(EOL)
     return lines[this.active_line_id()]
   }
 
-  this.active_word = function () {
+  active_word () {
     let l = this.active_word_location()
     return left.textarea_el.value.substr(l.from, l.to - l.from)
   }
 
-  this.active_url = function () {
+  active_url () {
     let words = this.active_line().split(' ')
     for (const id in words) {
       if (words[id].indexOf('://') > -1 || words[id].indexOf('www.') > -1) {
@@ -208,12 +221,12 @@ function Left () {
     return null
   }
 
-  this.prev_character = function () {
+  prev_character () {
     let l = this.active_word_location()
     return left.textarea_el.value.substr(l.from - 1, 1)
   }
 
-  this.replace_active_word_with = function (word) {
+  replace_active_word_with (word) {
     let l = this.active_word_location()
     let w = left.textarea_el.value.substr(l.from, l.to - l.from)
 
@@ -229,13 +242,13 @@ function Left () {
     this.textarea_el.focus()
   }
 
-  this.replace_selection_with = function (characters) {
+  replace_selection_with (characters) {
     document.execCommand('insertText', false, characters)
     this.update()
   }
 
   // del is an optional arg for deleting the line, used in actions
-  this.replace_line = function (id, newText, del = false) {
+  replace_line (id, newText, del = false) {
     let lineArr = this.textarea_el.value.split(EOL, parseInt(id) + 1)
     let arrJoin = lineArr.join(EOL)
 
@@ -243,7 +256,10 @@ function Left () {
     let to = arrJoin.length
 
     // splicing the string
-    let newTextValue = this.textarea_el.value.slice(0, del ? from - 1 : from) + newText + this.textarea_el.value.slice(to)
+    let newTextValue =
+      this.textarea_el.value.slice(0, del ? from - 1 : from) +
+      newText +
+      this.textarea_el.value.slice(to)
 
     // the cursor automatically moves to the changed position, so we have to set it back
     let cursorStart = this.textarea_el.selectionStart
@@ -273,19 +289,19 @@ function Left () {
     // this function turned out a lot longer than I was expecting. Ah well :/
   }
 
-  this.inject = function (characters = '__') {
+  inject (characters = '__') {
     let pos = this.textarea_el.selectionStart
     this.textarea_el.setSelectionRange(pos, pos)
     document.execCommand('insertText', false, characters)
     this.update()
   }
 
-  this.inject_line = function (characters = '__') {
+  inject_line (characters = '__') {
     left.select_line(left.active_line_id())
     this.inject(characters)
   }
 
-  this.inject_multiline = function (characters = '__') {
+  inject_multiline (characters = '__') {
     let lines = this.selected().match(/[^\r\n]+/g)
     let text = ''
     for (const id in lines) {
@@ -295,7 +311,7 @@ function Left () {
     this.replace_selection_with(text)
   }
 
-  this.find = function (word) {
+  find (word) {
     let text = left.textarea_el.value.toLowerCase()
     let parts = text.split(word.toLowerCase())
     let a = []
@@ -312,18 +328,22 @@ function Left () {
     return a
   }
 
-  this.autocomplete = function () {
+  autocomplete () {
     this.inject(left.suggestion.substr(left.selection.word.length, left.suggestion.length) + ' ')
   }
 
-  this.open_url = function (target = this.active_url()) {
-    if (!target) { return }
+  open_url (target = this.active_url()) {
+    if (!target) {
+      return
+    }
 
     this.select_word(target)
-    setTimeout(() => { require('electron').shell.openExternal(target) }, 500)
+    setTimeout(() => {
+      require('electron').shell.openExternal(target)
+    }, 500)
   }
 
-  this.reset = function () {
+  reset () {
     left.theme.reset()
     left.font.reset()
     left.update()

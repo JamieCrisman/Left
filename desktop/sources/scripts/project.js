@@ -1,5 +1,3 @@
-'use strict'
-
 const fs = require('fs')
 const { remote } = require('electron')
 const { app, dialog } = remote
@@ -7,13 +5,24 @@ const { app, dialog } = remote
 const Page = require('./page')
 const Splash = require('./splash')
 
-function Project () {
-  this.pages = []
+const isJSON = text => {
+  try {
+    JSON.parse(text)
+    return true
+  } catch (error) {
+    return false
+  }
+}
 
-  this.index = 0
-  this.original = ''
+class Project {
+  constructor () {
+    this.pages = []
 
-  this.start = function () {
+    this.index = 0
+    this.original = ''
+  }
+
+  start () {
     // Load previous files
     if (localStorage.hasOwnProperty('paths')) {
       if (isJSON(localStorage.getItem('paths'))) {
@@ -31,7 +40,7 @@ function Project () {
     }
   }
 
-  this.add = function (path = null) {
+  add (path = null) {
     console.log(`Adding page(${path})`)
 
     this.remove_splash()
@@ -39,8 +48,14 @@ function Project () {
     let page = new Page()
 
     if (path) {
-      if (this.paths().indexOf(path) > -1) { console.warn(`Already open(skipped): ${path}`); return }
-      if (!this.load(path)) { console.warn(`Invalid url(skipped): ${path}`); return }
+      if (this.paths().indexOf(path) > -1) {
+        console.warn(`Already open(skipped): ${path}`)
+        return
+      }
+      if (!this.load(path)) {
+        console.warn(`Invalid url(skipped): ${path}`)
+        return
+      }
       page = new Page(this.load(path), path)
     }
 
@@ -50,17 +65,20 @@ function Project () {
     localStorage.setItem('paths', JSON.stringify(this.paths()))
   }
 
-  this.page = function () {
+  page () {
     return this.pages[this.index]
   }
 
-  this.update = function () {
-    if (!this.page()) { console.warn('Missing page'); return }
+  update () {
+    if (!this.page()) {
+      console.warn('Missing page')
+      return
+    }
 
     this.page().commit(left.textarea_el.value)
   }
 
-  this.load = function (path) {
+  load (path) {
     console.log(`Load: ${path}`)
 
     let data
@@ -75,65 +93,94 @@ function Project () {
 
   // ========================
 
-  this.new = function () {
+  new () {
     console.log('New Page')
 
     this.add()
     left.reload()
 
-    setTimeout(() => { left.navi.next_page(); left.textarea_el.focus() }, 200)
+    setTimeout(() => {
+      left.navi.next_page()
+      left.textarea_el.focus()
+    }, 200)
   }
 
-  this.open = function () {
+  open () {
     console.log('Open Pages')
 
     let paths = dialog.showOpenDialog(app.win, { properties: ['openFile', 'multiSelections'] })
 
-    if (!paths) { console.log('Nothing to load'); return }
+    if (!paths) {
+      console.log('Nothing to load')
+      return
+    }
 
     for (const id in paths) {
       this.add(paths[id])
     }
 
-    setTimeout(() => { left.navi.next_page(); left.update() }, 200)
+    setTimeout(() => {
+      left.navi.next_page()
+      left.update()
+    }, 200)
   }
 
-  this.save = function () {
+  save () {
     console.log('Save Page')
 
     let page = this.page()
 
-    if (!page.path) { this.save_as(); return }
+    if (!page.path) {
+      this.save_as()
+      return
+    }
 
-    fs.writeFile(page.path, page.text, (err) => {
-      if (err) { alert('An error ocurred updating the file' + err.message); console.log(err); return }
+    fs.writeFile(page.path, page.text, err => {
+      if (err) {
+        alert('An error ocurred updating the file' + err.message)
+        console.log(err)
+        return
+      }
       left.update()
-      setTimeout(() => { left.stats.el.innerHTML = `<b>Saved</b> ${page.path}` }, 200)
+      setTimeout(() => {
+        left.stats.el.innerHTML = `<b>Saved</b> ${page.path}`
+      }, 200)
     })
   }
 
-  this.save_as = function () {
+  save_as () {
     console.log('Save As Page')
 
     let page = this.page()
     let path = dialog.showSaveDialog(app.win)
 
-    if (!path) { console.log('Nothing to save'); return }
+    if (!path) {
+      console.log('Nothing to save')
+      return
+    }
 
-    fs.writeFile(path, page.text, (err) => {
-      if (err) { alert('An error ocurred creating the file ' + err.message); return }
+    fs.writeFile(path, page.text, err => {
+      if (err) {
+        alert('An error ocurred creating the file ' + err.message)
+        return
+      }
       if (!page.path) {
         page.path = path
       } else if (page.path !== path) {
         left.project.pages.push(new Page(page.text, path))
       }
       left.update()
-      setTimeout(() => { left.stats.el.innerHTML = `<b>Saved</b> ${page.path}` }, 200)
+      setTimeout(() => {
+        left.stats.el.innerHTML = `<b>Saved</b> ${page.path}`
+      }, 200)
     })
   }
 
-  this.close = function () {
-    if (this.pages.length === 1) { console.warn('Cannot close'); return }
+  close () {
+    if (this.pages.length === 1) {
+      console.warn('Cannot close')
+      return
+    }
 
     if (this.page().has_changes()) {
       let response = dialog.showMessageBox(app.win, {
@@ -151,8 +198,11 @@ function Project () {
     localStorage.setItem('paths', JSON.stringify(this.paths()))
   }
 
-  this.force_close = function () {
-    if (this.pages.length === 1) { console.warn('Cannot close'); return }
+  force_close () {
+    if (this.pages.length === 1) {
+      console.warn('Cannot close')
+      return
+    }
 
     console.log('Closing..')
 
@@ -160,7 +210,7 @@ function Project () {
     left.go.to_page(this.index - 1)
   }
 
-  this.discard = function () {
+  discard () {
     let response = dialog.showMessageBox(app.win, {
       type: 'question',
       buttons: ['Yes', 'No'],
@@ -168,19 +218,22 @@ function Project () {
       message: 'Are you sure you want to discard changes?',
       icon: `${app.path()}/icon.png`
     })
-    if (response === 0) { // Runs the following if 'Yes' is clicked
+    if (response === 0) {
+      // Runs the following if 'Yes' is clicked
       left.reload(true)
     }
   }
 
-  this.has_changes = function () {
+  has_changes () {
     for (const id in this.pages) {
-      if (this.pages[id].has_changes()) { return true }
+      if (this.pages[id].has_changes()) {
+        return true
+      }
     }
     return false
   }
 
-  this.quit = function () {
+  quit () {
     if (this.has_changes()) {
       this.quit_dialog()
     } else {
@@ -188,7 +241,7 @@ function Project () {
     }
   }
 
-  this.quit_dialog = function () {
+  quit_dialog () {
     let response = dialog.showMessageBox(app.win, {
       type: 'question',
       buttons: ['Yes', 'No'],
@@ -201,7 +254,7 @@ function Project () {
     }
   }
 
-  this.remove_splash = function () {
+  remove_splash () {
     for (const id in this.pages) {
       let page = this.pages[id]
       if (page.text === new Splash().text) {
@@ -211,16 +264,16 @@ function Project () {
     }
   }
 
-  this.paths = function () {
+  paths () {
     let a = []
     for (const id in this.pages) {
       let page = this.pages[id]
-      if (page.path) { a.push(page.path) }
+      if (page.path) {
+        a.push(page.path)
+      }
     }
     return a
   }
-
-  function isJSON (text) { try { JSON.parse(text); return true } catch (error) { return false } }
 }
 
-module.exports = Project
+export default Project

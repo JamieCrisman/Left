@@ -1,30 +1,43 @@
-'use strict'
+import { EOL } from './dictionary'
 
-const EOL = '\n'
+class Insert {
+  constructor () {
+    this.is_active = false
+  }
 
-function Insert () {
-  this.is_active = false
-
-  this.start = function () {
+  start () {
     left.controller.set('insert')
     this.is_active = true
     left.update()
   }
 
-  this.stop = function () {
+  stop () {
     left.controller.set('default')
     this.is_active = false
     left.update()
   }
 
-  this.time = function () {
+  time () {
     left.inject(new Date().toLocaleTimeString() + ' ')
     this.stop()
   }
 
-  this.date = function () {
+  date () {
     const date = new Date()
-    const strArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const strArray = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ]
     const d = date.getDate()
     const m = strArray[date.getMonth()]
     const y = date.getFullYear()
@@ -33,14 +46,17 @@ function Insert () {
     this.stop()
   }
 
-  this.path = function () {
-    if (left.project.paths().length === 0) { this.stop(); return }
+  path () {
+    if (left.project.paths().length === 0) {
+      this.stop()
+      return
+    }
 
     left.inject(left.project.paths()[left.project.index])
     this.stop()
   }
 
-  this.header = function () {
+  header () {
     const isMultiline = left.selected().match(/[^\r\n]+/g)
 
     if (left.prev_character() === EOL && !isMultiline) {
@@ -53,7 +69,7 @@ function Insert () {
     this.stop()
   }
 
-  this.subheader = function () {
+  subheader () {
     const isMultiline = left.selected().match(/[^\r\n]+/g)
 
     if (left.prev_character() === EOL && !isMultiline) {
@@ -66,7 +82,7 @@ function Insert () {
     this.stop()
   }
 
-  this.comment = function () {
+  comment () {
     const isMultiline = left.selected().match(/[^\r\n]+/g)
 
     if (left.prev_character() === EOL && !isMultiline) {
@@ -79,7 +95,7 @@ function Insert () {
     this.stop()
   }
 
-  this.list = function () {
+  list () {
     const isMultiline = left.selected().match(/[^\r\n]+/g)
 
     if (left.prev_character() === EOL && !isMultiline) {
@@ -92,7 +108,7 @@ function Insert () {
     this.stop()
   }
 
-  this.line = function () {
+  line () {
     if (left.prev_character() !== EOL) {
       left.inject(EOL)
     }
@@ -100,9 +116,11 @@ function Insert () {
     this.stop()
   }
 
-  this.status = function () {
-    return `<b>Insert Mode</b> c-D <i>Date</i> c-T <i>Time</i> ${left.project.paths().length > 0 ? 'c-P <i>Path</i> ' : ''}c-H <i>Header</i> c-/ <i>Comment</i> Esc <i>Exit</i>.`
+  status () {
+    return `<b>Insert Mode</b> c-D <i>Date</i> c-T <i>Time</i> ${
+      left.project.paths().length > 0 ? 'c-P <i>Path</i> ' : ''
+    }c-H <i>Header</i> c-/ <i>Comment</i> Esc <i>Exit</i>.`
   }
 }
 
-module.exports = Insert
+export default Insert

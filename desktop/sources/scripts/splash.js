@@ -3,7 +3,9 @@
 const Page = require('./page')
 
 function Splash () {
-  Page.call(this, `# Welcome
+  Page.call(
+    this,
+    `# Welcome
 
 ## Guide
 
@@ -43,7 +45,8 @@ View sources: https://github.com/hundredrabbits/left
 -- Themes
 
 Download additional themes: http://hundredrabbits.itch.io/Left
-`)
+`
+  )
 
   this.name = function () {
     return 'splash'

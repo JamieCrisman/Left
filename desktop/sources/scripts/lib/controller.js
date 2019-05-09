@@ -1,31 +1,37 @@
 'use strict'
 
 function Controller () {
-  const fs = require('fs')
-  const { dialog, app } = require('electron').remote
-
   this.menu = { default: {} }
   this.mode = 'default'
 
   this.app = require('electron').remote.app
 
-  this.start = function () {
-  }
+  this.start = function () {}
 
   this.add = function (mode, cat, label, fn, accelerator) {
-    if (!this.menu[mode]) { this.menu[mode] = {} }
-    if (!this.menu[mode][cat]) { this.menu[mode][cat] = {} }
+    if (!this.menu[mode]) {
+      this.menu[mode] = {}
+    }
+    if (!this.menu[mode][cat]) {
+      this.menu[mode][cat] = {}
+    }
     this.menu[mode][cat][label] = { fn: fn, accelerator: accelerator }
   }
 
   this.addRole = function (mode, cat, label) {
-    if (!this.menu[mode]) { this.menu[mode] = {} }
-    if (!this.menu[mode][cat]) { this.menu[mode][cat] = {} }
+    if (!this.menu[mode]) {
+      this.menu[mode] = {}
+    }
+    if (!this.menu[mode][cat]) {
+      this.menu[mode][cat] = {}
+    }
     this.menu[mode][cat][label] = { role: label }
   }
 
   this.clearCat = function (mode, cat) {
-    if (this.menu[mode]) { this.menu[mode][cat] = {} }
+    if (this.menu[mode]) {
+      this.menu[mode][cat] = {}
+    }
   }
 
   this.set = function (mode = 'default') {
@@ -60,9 +66,26 @@ function Controller () {
     for (cat in menu) {
       const options = menu[cat]
       for (const id in options.submenu) {
-        const option = options.submenu[id]; if (option.role) { continue }
-        acc.basic = (option.accelerator.toLowerCase() === key.toLowerCase()) ? option.label.toUpperCase().replace('TOGGLE ', '').substr(0, 8).trim() : acc.basic
-        acc.ctrl = (option.accelerator.toLowerCase() === ('CmdOrCtrl+' + key).toLowerCase()) ? option.label.toUpperCase().replace('TOGGLE ', '').substr(0, 8).trim() : acc.ctrl
+        const option = options.submenu[id]
+        if (option.role) {
+          continue
+        }
+        acc.basic =
+          option.accelerator.toLowerCase() === key.toLowerCase()
+            ? option.label
+              .toUpperCase()
+              .replace('TOGGLE ', '')
+              .substr(0, 8)
+              .trim()
+            : acc.basic
+        acc.ctrl =
+          option.accelerator.toLowerCase() === ('CmdOrCtrl+' + key).toLowerCase()
+            ? option.label
+              .toUpperCase()
+              .replace('TOGGLE ', '')
+              .substr(0, 8)
+              .trim()
+            : acc.ctrl
       }
     }
     return acc

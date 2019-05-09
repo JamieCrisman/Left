@@ -1,5 +1,3 @@
-'use strict'
-
 document.onkeydown = function keyDown (e) {
   left.last_char = e.key
 
@@ -39,12 +37,16 @@ document.onkeydown = function keyDown (e) {
 
   // Slower Refresh
   if (e.key === 'Enter') {
-    setTimeout(() => { left.dictionary.update(); left.update() }, 16)
+    setTimeout(() => {
+      left.dictionary.update()
+      left.update()
+    }, 16)
   }
 }
 
-document.onkeyup = (e) => {
-  if (e.keyCode === 16) { // Shift
+document.onkeyup = e => {
+  if (e.keyCode === 16) {
+    // Shift
     left.stats.applySynonym()
     left.update()
     return
@@ -68,9 +70,16 @@ window.addEventListener('drop', function (e) {
 
   for (const id in files) {
     const file = files[id]
-    if (!file.path) { continue }
-    if (file.type && !file.type.match(/text.*/)) { console.log(`Skipped ${file.type} : ${file.path}`); continue }
-    if (file.path && file.path.substr(-3, 3) === 'thm') { continue }
+    if (!file.path) {
+      continue
+    }
+    if (file.type && !file.type.match(/text.*/)) {
+      console.log(`Skipped ${file.type} : ${file.path}`)
+      continue
+    }
+    if (file.path && file.path.substr(-3, 3) === 'thm') {
+      continue
+    }
 
     left.project.add(file.path)
   }

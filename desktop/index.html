@@ -5,19 +5,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-    <link rel="stylesheet" href="links/reset.css"/>
-    <link rel="stylesheet" href="links/fonts.css"/>
-    <link rel="stylesheet" href="links/main.css"/>
-    <link rel="stylesheet" href="links/theme.css"/>
+    <link rel="stylesheet" href="./sources/links/reset.css"/>
+    <link rel="stylesheet" href="./sources/links/fonts.css"/>
+    <link rel="stylesheet" href="./sources/links/main.css"/>
+    <link rel="stylesheet" href="./sources/links/theme.css"/>
 
-    <script src="scripts/events.js"></script>
+    <script src="./sources/scripts/events.js"></script>
   </head>
   <body>
     <script>
       'use strict'
 
       const { shell, remote } = require('electron')
-      const Left = require('./left')
+      const Left = require('./build/left')
       const { app } = remote
       const EOL = '\n'
 

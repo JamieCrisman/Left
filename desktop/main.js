@@ -14,7 +14,11 @@ app.on('ready', () => {
     minWidth: 310,
     minHeight: 350,
     backgroundColor: '#000',
-    icon: __dirname + '/' + { darwin: 'icon.icns', linux: 'icon.png', win32: 'icon.ico' }[process.platform] || 'icon.ico',
+    icon:
+      __dirname +
+        '/' +
+        { darwin: 'icon.icns', linux: 'icon.png', win32: 'icon.ico' }[process.platform] ||
+      'icon.ico',
     resizable: true,
     frame: process.platform !== 'darwin',
     skipTaskbar: process.platform === 'darwin',
@@ -23,7 +27,7 @@ app.on('ready', () => {
     webPreferences: { backgroundThrottling: false }
   })
 
-  app.win.loadURL(`file://${__dirname}/sources/index.html`)
+  app.win.loadURL(`file://${__dirname}/index.html`)
 
   app.win.on('closed', () => {
     win = null
@@ -61,9 +65,17 @@ app.toggleFullscreen = function () {
 
 app.toggleVisible = function () {
   if (process.platform === 'darwin') {
-    if (isShown && !app.win.isFullScreen()) { app.win.hide() } else { app.win.show() }
+    if (isShown && !app.win.isFullScreen()) {
+      app.win.hide()
+    } else {
+      app.win.show()
+    }
   } else {
-    if (!app.win.isMinimized()) { app.win.minimize() } else { app.win.restore() }
+    if (!app.win.isMinimized()) {
+      app.win.minimize()
+    } else {
+      app.win.restore()
+    }
   }
 }
 
