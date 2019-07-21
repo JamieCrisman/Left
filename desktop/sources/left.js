@@ -78,6 +78,7 @@ class Left {
   }
 
   start () {
+    this.controller.start()
     this.theme.start()
     this.font.start()
     this.dictionary.start()
@@ -88,7 +89,6 @@ class Left {
     this.textarea_el.focus()
     this.textarea_el.setSelectionRange(0, 0)
 
-    this.dictionary.update()
     this.update()
   }
 

@@ -1,5 +1,3 @@
-'use strict'
-
 import { readFileSync } from 'fs'
 import { EOL } from './dictionary'
 

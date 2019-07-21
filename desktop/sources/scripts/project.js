@@ -36,7 +36,6 @@ class Project {
     // Add splash
     if (this.pages.length === 0) {
       left.project.pages.push(new Splash())
-      left.go.to_page(0)
     }
   }
 

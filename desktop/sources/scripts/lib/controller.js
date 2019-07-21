@@ -1,14 +1,25 @@
 'use strict'
 
-function Controller () {
-  this.menu = { default: {} }
-  this.mode = 'default'
+import { remote } from 'electron'
 
-  this.app = require('electron').remote.app
+import { controls, roles } from './controls'
 
-  this.start = function () {}
+const app = remote.app
 
-  this.add = function (mode, cat, label, fn, accelerator) {
+class Controller {
+  constructor () {
+    this.menu = { default: {} }
+    this.mode = 'default'
+  }
+
+  start () {
+    controls.forEach(({ mode, cat, label, fn, accelerator }) =>
+      this.add(mode, cat, label, fn, accelerator)
+    )
+    roles.forEach(({ mode, cat, label }) => this.addRole(mode, cat, label))
+  }
+
+  add (mode, cat, label, fn, accelerator) {
     if (!this.menu[mode]) {
       this.menu[mode] = {}
     }
@@ -18,7 +29,7 @@ function Controller () {
     this.menu[mode][cat][label] = { fn: fn, accelerator: accelerator }
   }
 
-  this.addRole = function (mode, cat, label) {
+  addRole (mode, cat, label) {
     if (!this.menu[mode]) {
       this.menu[mode] = {}
     }
@@ -28,18 +39,18 @@ function Controller () {
     this.menu[mode][cat][label] = { role: label }
   }
 
-  this.clearCat = function (mode, cat) {
+  clearCat (mode, cat) {
     if (this.menu[mode]) {
       this.menu[mode][cat] = {}
     }
   }
 
-  this.set = function (mode = 'default') {
+  set (mode = 'default') {
     this.mode = mode
     this.commit()
   }
 
-  this.format = function () {
+  format () {
     const f = []
     const m = this.menu[this.mode]
     for (const cat in m) {
@@ -57,11 +68,11 @@ function Controller () {
     return f
   }
 
-  this.commit = function () {
-    this.app.injectMenu(this.format())
+  commit () {
+    app.injectMenu(this.format())
   }
 
-  this.accelerator = function (key, menu) {
+  accelerator (key, menu) {
     const acc = { basic: null, ctrl: null }
     for (cat in menu) {
       const options = menu[cat]
@@ -91,7 +102,7 @@ function Controller () {
     return acc
   }
 
-  this.docs = function () {
+  docs () {
     // TODO
     console.log(this.menu.default)
   }

@@ -1,4 +1,4 @@
-import {SYN_DB} from './synonyms'
+import { SYN_DB } from './synonyms'
 export const EOL = '\n'
 
 class Dictionary {
@@ -51,12 +51,15 @@ class Dictionary {
   find_suggestion (str) {
     const target = str.toLowerCase()
 
+    const time = performance.now()
     for (const id in this.vocabulary) {
       if (this.vocabulary[id].substr(0, target.length) !== target) {
         continue
       }
+      console.log(` - find_suggestion success ${(performance.now() - time).toFixed(2)}ms.`)
       return this.vocabulary[id]
     }
+    console.log(` - find_suggestion fail ${(performance.now() - time).toFixed(2)}ms.`)
     return null
   }
 

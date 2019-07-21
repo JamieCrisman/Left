@@ -95,4 +95,4 @@ class Go {
   }
 }
 
-module.exports = Go
+export default Go
