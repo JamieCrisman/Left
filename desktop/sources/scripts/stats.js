@@ -1,149 +1,151 @@
-import { EOL } from './dictionary'
-import { clamp } from './math'
+import { EOL } from './dictionary';
+import { clamp } from './math';
 
 class Stats {
-  constructor () {
-    this.el = document.createElement('stats')
-    this.list = null
-    this.isSynonymsActive = false
+  constructor() {
+    this.el = document.createElement('stats');
+    this.list = null;
+    this.isSynonymsActive = false;
   }
 
-  install (host) {
-    host.appendChild(this.el)
+  install(host) {
+    host.appendChild(this.el);
   }
 
-  update (special = '') {
+  update(special = '') {
     if (left.insert.is_active) {
-      this.el.innerHTML = left.insert.status()
-      return
+      this.el.innerHTML = left.insert.status();
+      return;
     }
 
     if (left.textarea_el.selectionStart !== left.textarea_el.selectionEnd) {
-      this.el.innerHTML = this._selection()
+      this.el.innerHTML = this._selection();
     } else if (left.synonyms) {
-      this.el.innerHTML = ''
-      this.el.appendChild(this._synonyms())
+      this.el.innerHTML = '';
+      this.el.appendChild(this._synonyms());
     } else if (left.selection.word && left.suggestion) {
-      this.el.innerHTML = this._suggestion()
+      this.el.innerHTML = this._suggestion();
     } else if (left.selection.url) {
-      this.el.innerHTML = this._url()
+      this.el.innerHTML = this._url();
     } else {
-      this.el.innerHTML = this._default()
+      this.el.innerHTML = this._default();
     }
+
+    this.isSynonymsActive = left.synonyms && left.synonyms.length > 0;
   }
 
-  _default () {
-    let stats = this.parse(left.selected())
-    let date = new Date()
+  _default() {
+    let stats = this.parse(left.selected());
+    let date = new Date();
     return `${stats.l}L ${stats.w}W ${stats.v}V ${stats.c}C ${
       stats.p
-    }% <span class='right'>${date.getHours()}:${date.getMinutes()}</span>`
+    }% <span class='right'>${date.getHours()}:${('0' + date.getMinutes()).slice(-2)}</span>`;
   }
 
-  incrementSynonym () {
-    left.selection.index = (left.selection.index + 1) % left.synonyms.length
+  incrementSynonym() {
+    if (!this.isSynonymsActive) return;
+    left.selection.index = (left.selection.index + 1) % left.synonyms.length;
   }
 
-  nextSynonym () {
-    this.isSynonymsActive = true
-
+  nextSynonym() {
+    if (!this.isSynonymsActive) return;
     // Save the previous word element
-    const previousWord = this.list.children[left.selection.index]
+    const previousWord = this.list.children[left.selection.index];
 
     // Increment the index
-    this.incrementSynonym()
+    this.incrementSynonym();
 
     // Get the current word element, add/remove appropriate active class
-    const currentWord = this.list.children[left.selection.index]
-    previousWord.classList.remove('active')
-    currentWord.classList.add('active')
+    const currentWord = this.list.children[left.selection.index];
+    previousWord.classList.remove('active');
+    currentWord.classList.add('active');
 
     currentWord.scrollIntoView({
-      behavior: 'smooth'
-    })
+      behavior: 'smooth',
+    });
   }
 
-  applySynonym () {
+  applySynonym() {
     if (!this.isSynonymsActive) {
-      return
+      return;
     }
 
     // Replace the current word with the selected synonym
-    left.replace_active_word_with(left.synonyms[left.selection.index % left.synonyms.length])
+    left.replace_active_word_with(left.synonyms[left.selection.index % left.synonyms.length]);
   }
 
-  _synonyms () {
-    left.selection.index = 0
+  _synonyms() {
+    left.selection.index = 0;
 
-    const ul = document.createElement('ul')
+    const ul = document.createElement('ul');
 
     left.synonyms.forEach(syn => {
-      const li = document.createElement('li')
-      li.textContent = syn
-      ul.appendChild(li)
-    })
+      const li = document.createElement('li');
+      li.textContent = syn;
+      ul.appendChild(li);
+    });
 
-    ul.children[0].classList.add('active')
-    this.el.scrollLeft = 0
-    this.list = ul
+    ul.children[0].classList.add('active');
+    this.el.scrollLeft = 0;
+    this.list = ul;
 
-    return ul
+    return ul;
   }
 
-  _suggestion () {
+  _suggestion() {
     return `<t>${left.selection.word}<b>${left.suggestion.substr(
       left.selection.word.length,
-      left.suggestion.length
-    )}</b></t>`
+      left.suggestion.length,
+    )}</b></t>`;
   }
 
-  _selection () {
+  _selection() {
     return `<b>[${left.textarea_el.selectionStart},${
       left.textarea_el.selectionEnd
-    }]</b> ${this._default()}`
+    }]</b> ${this._default()}`;
   }
 
-  _url () {
-    let date = new Date()
+  _url() {
+    let date = new Date();
     return `Open <b>${
       left.selection.url
-    }</b> with &lt;c-b&gt; <span class='right'>${date.getHours()}:${date.getMinutes()}</span>`
+    }</b> with &lt;c-b&gt; <span class='right'>${date.getHours()}:${date.getMinutes()}</span>`;
   }
 
-  on_scroll () {
-    let scrollDistance = left.textarea_el.scrollTop
-    let scrollMax = left.textarea_el.scrollHeight - left.textarea_el.offsetHeight
-    let ratio = Math.min(1, scrollMax === 0 ? 0 : scrollDistance / scrollMax)
+  on_scroll() {
+    let scrollDistance = left.textarea_el.scrollTop;
+    let scrollMax = left.textarea_el.scrollHeight - left.textarea_el.offsetHeight;
+    let ratio = Math.min(1, scrollMax === 0 ? 0 : scrollDistance / scrollMax);
     let progress = ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|']
       .map((v, i) => {
-        return i < ratio * 10 ? '<b>|</b>' : v
+        return i < ratio * 10 ? '<b>|</b>' : v;
       })
-      .join('')
+      .join('');
 
-    this.el.innerHTML = `${progress} ${(ratio * 100).toFixed(2)}%`
+    this.el.innerHTML = `${progress} ${(ratio * 100).toFixed(2)}%`;
   }
 
-  parse (text = left.textarea_el.value) {
-    text = text.length > 5 ? text.trim() : left.textarea_el.value
+  parse(text = left.textarea_el.value) {
+    text = text.length > 5 ? text.trim() : left.textarea_el.value;
 
-    let h = {}
+    let h = {};
     let words = text
       .toLowerCase()
       .replace(/[^a-z0-9 ]/g, '')
-      .split(' ')
+      .split(' ');
     for (const id in words) {
-      h[words[id]] = 1
+      h[words[id]] = 1;
     }
 
-    let stats = {}
-    stats.l = text.split(EOL).length // lines_count
-    stats.w = text.split(' ').length // words_count
-    stats.c = text.length // chars_count
-    stats.v = Object.keys(h).length
+    let stats = {};
+    stats.l = text.split(EOL).length; // lines_count
+    stats.w = text.split(' ').length; // words_count
+    stats.c = text.length; // chars_count
+    stats.v = Object.keys(h).length;
     stats.p =
-      stats.c > 0 ? clamp((left.textarea_el.selectionEnd / stats.c) * 100, 0, 100).toFixed(2) : 0
-    return stats
+      stats.c > 0 ? clamp((left.textarea_el.selectionEnd / stats.c) * 100, 0, 100).toFixed(2) : 0;
+    return stats;
   }
 }
 
-export default Stats
+export default Stats;

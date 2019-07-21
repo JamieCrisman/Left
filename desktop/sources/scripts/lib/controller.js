@@ -1,111 +1,126 @@
-'use strict'
+'use strict';
 
-import { remote } from 'electron'
+import { remote } from 'electron';
 
-import { controls, roles } from './controls'
+import { controls, roles, spacers } from './controls';
 
-const app = remote.app
+const app = remote.app;
 
 class Controller {
-  constructor () {
-    this.menu = { default: {} }
-    this.mode = 'default'
+  constructor() {
+    this.menu = { default: {} };
+    this.mode = 'default';
   }
 
-  start () {
+  start() {
     controls.forEach(({ mode, cat, label, fn, accelerator }) =>
-      this.add(mode, cat, label, fn, accelerator)
-    )
-    roles.forEach(({ mode, cat, label }) => this.addRole(mode, cat, label))
+      this.add(mode, cat, label, fn, accelerator),
+    );
+    roles.forEach(({ mode, cat, label }) => this.addRole(mode, cat, label));
+
+    spacers.forEach(({ mode, cat, label }) => this.addSpacer(mode, cat, label));
   }
 
-  add (mode, cat, label, fn, accelerator) {
+  add(mode, cat, label, fn, accelerator) {
     if (!this.menu[mode]) {
-      this.menu[mode] = {}
+      this.menu[mode] = {};
     }
     if (!this.menu[mode][cat]) {
-      this.menu[mode][cat] = {}
+      this.menu[mode][cat] = {};
     }
-    this.menu[mode][cat][label] = { fn: fn, accelerator: accelerator }
+    this.menu[mode][cat][label] = { fn: fn, accelerator: accelerator };
   }
 
-  addRole (mode, cat, label) {
+  addRole(mode, cat, label) {
     if (!this.menu[mode]) {
-      this.menu[mode] = {}
+      this.menu[mode] = {};
     }
     if (!this.menu[mode][cat]) {
-      this.menu[mode][cat] = {}
+      this.menu[mode][cat] = {};
     }
-    this.menu[mode][cat][label] = { role: label }
+    this.menu[mode][cat][label] = { role: label };
   }
 
-  clearCat (mode, cat) {
+  addSpacer(mode, cat, label, type = 'separator') {
+    if (!this.menu[mode]) {
+      this.menu[mode] = {};
+    }
+    if (!this.menu[mode][cat]) {
+      this.menu[mode][cat] = {};
+    }
+    this.menu[mode][cat][label] = { type: type };
+  }
+
+  clearCat(mode, cat) {
     if (this.menu[mode]) {
-      this.menu[mode][cat] = {}
+      this.menu[mode][cat] = {};
     }
   }
 
-  set (mode = 'default') {
-    this.mode = mode
-    this.commit()
+  set(mode = 'default') {
+    this.mode = mode;
+    this.commit();
   }
 
-  format () {
-    const f = []
-    const m = this.menu[this.mode]
+  format() {
+    const f = [];
+    const m = this.menu[this.mode];
     for (const cat in m) {
-      const submenu = []
+      const submenu = [];
       for (const name in m[cat]) {
-        const option = m[cat][name]
+        const option = m[cat][name];
         if (option.role) {
-          submenu.push({ role: option.role })
+          submenu.push({ role: option.role });
+        } else if (option.type) {
+          submenu.push({ type: option.type });
         } else {
-          submenu.push({ label: name, accelerator: option.accelerator, click: option.fn })
+          submenu.push({ label: name, accelerator: option.accelerator, click: option.fn });
         }
       }
-      f.push({ label: cat, submenu: submenu })
+      f.push({ label: cat, submenu: submenu });
     }
-    return f
+    return f;
   }
 
-  commit () {
-    app.injectMenu(this.format())
+  commit() {
+    console.log('Controller', 'Changing..');
+    app.injectMenu(this.format());
   }
 
-  accelerator (key, menu) {
-    const acc = { basic: null, ctrl: null }
+  accelerator(key, menu) {
+    const acc = { basic: null, ctrl: null };
     for (cat in menu) {
-      const options = menu[cat]
+      const options = menu[cat];
       for (const id in options.submenu) {
-        const option = options.submenu[id]
+        const option = options.submenu[id];
         if (option.role) {
-          continue
+          continue;
         }
         acc.basic =
           option.accelerator.toLowerCase() === key.toLowerCase()
             ? option.label
-              .toUpperCase()
-              .replace('TOGGLE ', '')
-              .substr(0, 8)
-              .trim()
-            : acc.basic
+                .toUpperCase()
+                .replace('TOGGLE ', '')
+                .substr(0, 8)
+                .trim()
+            : acc.basic;
         acc.ctrl =
           option.accelerator.toLowerCase() === ('CmdOrCtrl+' + key).toLowerCase()
             ? option.label
-              .toUpperCase()
-              .replace('TOGGLE ', '')
-              .substr(0, 8)
-              .trim()
-            : acc.ctrl
+                .toUpperCase()
+                .replace('TOGGLE ', '')
+                .substr(0, 8)
+                .trim()
+            : acc.ctrl;
       }
     }
-    return acc
+    return acc;
   }
 
-  docs () {
+  docs() {
     // TODO
-    console.log(this.menu.default)
+    console.log(this.menu.default);
   }
 }
 
-module.exports = Controller
+module.exports = Controller;

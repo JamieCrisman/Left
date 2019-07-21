@@ -1,572 +1,565 @@
+const spacers = [{ mode: 'default', cat: 'Theme', label: 'Download' }];
+
 const controls = [
   {
     mode: 'default',
     cat: '*',
     label: 'About',
     fn: () => {
-      shell.openExternal('https://github.com/hundredrabbits/Left')
+      shell.openExternal('https://github.com/hundredrabbits/Left');
     },
-    accelerator: 'CmdOrCtrl+,'
+    accelerator: 'CmdOrCtrl+,',
   },
   {
     mode: 'default',
     cat: '*',
     label: 'Fullscreen',
     fn: () => {
-      app.toggleFullscreen()
+      app.toggleFullscreen();
     },
-    accelerator: 'CmdOrCtrl+Enter'
+    accelerator: 'CmdOrCtrl+Enter',
   },
   {
     mode: 'default',
     cat: '*',
     label: 'Hide',
     fn: () => {
-      app.toggleVisible()
+      app.toggleVisible();
     },
-    accelerator: 'CmdOrCtrl+H'
+    accelerator: 'CmdOrCtrl+H',
   },
   {
     mode: 'default',
     cat: '*',
     label: 'Reset',
     fn: () => {
-      left.reset()
+      left.reset();
     },
-    accelerator: 'CmdOrCtrl+Backspace'
+    accelerator: 'CmdOrCtrl+Backspace',
   },
   {
     mode: 'default',
     cat: '*',
     label: 'Quit',
     fn: () => {
-      left.project.quit()
+      left.project.quit();
     },
-    accelerator: 'CmdOrCtrl+Q'
+    accelerator: 'CmdOrCtrl+Q',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'New',
     fn: () => {
-      left.project.new()
+      left.project.new();
     },
-    accelerator: 'CmdOrCtrl+N'
+    accelerator: 'CmdOrCtrl+N',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'Open',
     fn: () => {
-      left.project.open()
+      left.project.open();
     },
-    accelerator: 'CmdOrCtrl+O'
+    accelerator: 'CmdOrCtrl+O',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'Save',
     fn: () => {
-      left.project.save()
+      left.project.save();
     },
-    accelerator: 'CmdOrCtrl+S'
+    accelerator: 'CmdOrCtrl+S',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'Save As',
     fn: () => {
-      left.project.save_as()
+      left.project.save_as();
     },
-    accelerator: 'CmdOrCtrl+Shift+S'
+    accelerator: 'CmdOrCtrl+Shift+S',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'Discard Changes',
     fn: () => {
-      left.project.discard()
+      left.project.discard();
     },
-    accelerator: 'CmdOrCtrl+D'
+    accelerator: 'CmdOrCtrl+D',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'Close File',
     fn: () => {
-      left.project.close()
+      left.project.close();
     },
-    accelerator: 'CmdOrCtrl+W'
+    accelerator: 'CmdOrCtrl+W',
   },
   {
     mode: 'default',
     cat: 'File',
     label: 'Force Close',
     fn: () => {
-      left.project.force_close()
+      left.project.force_close();
     },
-    accelerator: 'CmdOrCtrl+Shift+W'
+    accelerator: 'CmdOrCtrl+Shift+W',
   },
   {
     mode: 'default',
     cat: 'Edit',
     label: 'Add Linebreak',
     fn: () => {
-      left.go.to_next(EOL, false)
-      left.inject(EOL)
+      left.go.to_next(EOL, false);
+      left.inject(EOL);
     },
-    accelerator: 'CmdOrCtrl+Shift+Enter'
+    accelerator: 'CmdOrCtrl+Shift+Enter',
   },
   {
     mode: 'default',
     cat: 'Select',
     label: 'Select Autocomplete',
     fn: () => {
-      left.select_autocomplete()
+      left.select_autocomplete();
     },
-    accelerator: 'Tab'
+    accelerator: 'Tab',
   },
   {
     mode: 'default',
     cat: 'Select',
     label: 'Select Synonym',
     fn: () => {
-      left.select_synonym()
+      left.select_synonym();
     },
-    accelerator: 'Shift+Tab'
+    accelerator: 'Shift+Tab',
   },
   {
     mode: 'default',
     cat: 'Select',
     label: 'Find',
     fn: () => {
-      left.operator.start('find: ')
+      left.operator.start('find: ');
     },
-    accelerator: 'CmdOrCtrl+F'
+    accelerator: 'CmdOrCtrl+F',
   },
   {
     mode: 'default',
     cat: 'Select',
     label: 'Replace',
     fn: () => {
-      left.operator.start('replace: a -> b')
+      left.operator.start('replace: a -> b');
     },
-    accelerator: 'CmdOrCtrl+Shift+F'
+    accelerator: 'CmdOrCtrl+Shift+F',
   },
   {
     mode: 'default',
     cat: 'Select',
     label: 'Goto',
     fn: () => {
-      left.operator.start('goto: ')
+      left.operator.start('goto: ');
     },
-    accelerator: 'CmdOrCtrl+G'
+    accelerator: 'CmdOrCtrl+G',
   },
   {
     mode: 'default',
     cat: 'Select',
     label: 'Open Url',
     fn: () => {
-      left.open_url()
+      left.open_url();
     },
-    accelerator: 'CmdOrCtrl+B'
+    accelerator: 'CmdOrCtrl+B',
   },
   {
     mode: 'default',
     cat: 'Navigation',
     label: 'Next File',
     fn: () => {
-      left.navi.next_page()
+      left.navi.next_page();
     },
-    accelerator: 'CmdOrCtrl+Shift+]'
+    accelerator: 'CmdOrCtrl+Shift+]',
   },
   {
     mode: 'default',
     cat: 'Navigation',
     label: 'Prev File',
     fn: () => {
-      left.navi.prev_page()
+      left.navi.prev_page();
     },
-    accelerator: 'CmdOrCtrl+Shift+['
+    accelerator: 'CmdOrCtrl+Shift+[',
   },
   {
     mode: 'default',
     cat: 'Navigation',
     label: 'Next Marker',
     fn: () => {
-      left.navi.next_marker()
+      left.navi.next_marker();
     },
-    accelerator: 'CmdOrCtrl+]'
+    accelerator: 'CmdOrCtrl+]',
   },
   {
     mode: 'default',
     cat: 'Navigation',
     label: 'Prev Marker',
     fn: () => {
-      left.navi.prev_marker()
+      left.navi.prev_marker();
     },
-    accelerator: 'CmdOrCtrl+['
+    accelerator: 'CmdOrCtrl+[',
   },
   {
     mode: 'default',
     cat: 'View',
     label: 'Toggle Navigation',
     fn: () => {
-      left.navi.toggle()
+      left.navi.toggle();
     },
-    accelerator: 'CmdOrCtrl+\\'
+    accelerator: 'CmdOrCtrl+\\',
   },
   {
     mode: 'default',
     cat: 'View',
     label: 'Previous Font',
     fn: () => {
-      left.font.previousFont()
+      left.font.previousFont();
     },
-    accelerator: 'CmdOrCtrl+Shift+,'
+    accelerator: 'CmdOrCtrl+Shift+,',
   },
   {
     mode: 'default',
     cat: 'View',
     label: 'Next Font',
     fn: () => {
-      left.font.nextFont()
+      left.font.nextFont();
     },
-    accelerator: 'CmdOrCtrl+Shift+.'
+    accelerator: 'CmdOrCtrl+Shift+.',
   },
   {
     mode: 'default',
     cat: 'View',
     label: 'Decrease Font Size',
     fn: () => {
-      left.font.decreaseFontSize()
+      left.font.decreaseFontSize();
     },
-    accelerator: 'CmdOrCtrl+-'
+    accelerator: 'CmdOrCtrl+-',
   },
   {
     mode: 'default',
     cat: 'View',
     label: 'Increase Font Size',
     fn: () => {
-      left.font.increaseFontSize()
+      left.font.increaseFontSize();
     },
-    accelerator: 'CmdOrCtrl+='
+    accelerator: 'CmdOrCtrl+=',
   },
   {
     mode: 'default',
     cat: 'View',
     label: 'Reset Font Size',
     fn: () => {
-      left.font.resetFontSize()
+      left.font.resetFontSize();
     },
-    accelerator: 'CmdOrCtrl+0'
+    accelerator: 'CmdOrCtrl+0',
   },
   {
     mode: 'default',
     cat: 'Mode',
     label: 'Reader',
     fn: () => {
-      left.reader.start()
+      left.reader.start();
     },
-    accelerator: 'CmdOrCtrl+K'
+    accelerator: 'CmdOrCtrl+K',
   },
   {
     mode: 'default',
     cat: 'Mode',
     label: 'Insert',
     fn: () => {
-      left.insert.start()
+      left.insert.start();
     },
-    accelerator: 'CmdOrCtrl+I'
+    accelerator: 'CmdOrCtrl+I',
   },
   {
     mode: 'default',
     cat: 'Theme',
-    label: 'Noir',
+    label: 'Open Theme',
     fn: () => {
-      left.theme.noir()
+      left.theme.open();
     },
-    accelerator: 'CmdOrCtrl+Shift+1'
+    accelerator: 'CmdOrCtrl+Shift+O',
   },
   {
     mode: 'default',
     cat: 'Theme',
-    label: 'Pale',
+    label: 'Reset Theme',
     fn: () => {
-      left.theme.pale()
+      left.theme.reset();
     },
-    accelerator: 'CmdOrCtrl+Shift+2'
+    accelerator: 'CmdOrCtrl+Shift+Backspace',
   },
   {
     mode: 'default',
     cat: 'Theme',
-    label: 'Invert',
+    label: 'Download Themes..',
     fn: () => {
-      left.theme.invert()
+      require('electron').shell.openExternal('https://github.com/hundredrabbits/Themes');
     },
-    accelerator: 'CmdOrCtrl+Shift+I'
-  },
-  {
-    mode: 'default',
-    cat: 'Theme',
-    label: 'Install',
-    fn: () => {
-      require('electron').shell.openExternal('https://github.com/hundredrabbits/Themes')
-    }
   },
   {
     mode: 'reader',
     cat: '*',
     label: 'About',
     fn: () => {
-      require('electron').shell.openExternal('https://github.com/hundredrabbits/Left')
+      require('electron').shell.openExternal('https://github.com/hundredrabbits/Left');
     },
-    accelerator: 'CmdOrCtrl+,'
+    accelerator: 'CmdOrCtrl+,',
   },
   {
     mode: 'reader',
     cat: '*',
     label: 'Fullscreen',
     fn: () => {
-      app.toggleFullscreen()
+      app.toggleFullscreen();
     },
-    accelerator: 'CmdOrCtrl+Enter'
+    accelerator: 'CmdOrCtrl+Enter',
   },
   {
     mode: 'reader',
     cat: '*',
     label: 'Hide',
     fn: () => {
-      app.toggleVisible()
+      app.toggleVisible();
     },
-    accelerator: 'CmdOrCtrl+H'
+    accelerator: 'CmdOrCtrl+H',
   },
   {
     mode: 'reader',
     cat: '*',
     label: 'Reset',
     fn: () => {
-      left.theme.reset()
+      left.theme.reset();
     },
-    accelerator: 'CmdOrCtrl+Backspace'
+    accelerator: 'CmdOrCtrl+Backspace',
   },
   {
     mode: 'reader',
     cat: '*',
     label: 'Quit',
     fn: () => {
-      left.project.quit()
+      left.project.quit();
     },
-    accelerator: 'CmdOrCtrl+Q'
+    accelerator: 'CmdOrCtrl+Q',
   },
   {
     mode: 'reader',
     cat: 'Reader',
     label: 'Stop',
     fn: () => {
-      left.reader.stop()
+      left.reader.stop();
     },
-    accelerator: 'Esc'
+    accelerator: 'Esc',
   },
   {
     mode: 'operator',
     cat: '*',
     label: 'About',
     fn: () => {
-      require('electron').shell.openExternal('https://github.com/hundredrabbits/Left')
+      require('electron').shell.openExternal('https://github.com/hundredrabbits/Left');
     },
-    accelerator: 'CmdOrCtrl+,'
+    accelerator: 'CmdOrCtrl+,',
   },
   {
     mode: 'operator',
     cat: '*',
     label: 'Fullscreen',
     fn: () => {
-      app.toggleFullscreen()
+      app.toggleFullscreen();
     },
-    accelerator: 'CmdOrCtrl+Enter'
+    accelerator: 'CmdOrCtrl+Enter',
   },
   {
     mode: 'operator',
     cat: '*',
     label: 'Hide',
     fn: () => {
-      app.toggleVisible()
+      app.toggleVisible();
     },
-    accelerator: 'CmdOrCtrl+H'
+    accelerator: 'CmdOrCtrl+H',
   },
   {
     mode: 'operator',
     cat: '*',
     label: 'Reset',
     fn: () => {
-      left.theme.reset()
+      left.theme.reset();
     },
-    accelerator: 'CmdOrCtrl+Backspace'
+    accelerator: 'CmdOrCtrl+Backspace',
   },
   {
     mode: 'operator',
     cat: '*',
     label: 'Quit',
     fn: () => {
-      left.project.quit()
+      left.project.quit();
     },
-    accelerator: 'CmdOrCtrl+Q'
+    accelerator: 'CmdOrCtrl+Q',
   },
   {
     mode: 'insert',
     cat: '*',
     label: 'About',
     fn: () => {
-      require('electron').shell.openExternal('https://github.com/hundredrabbits/Left')
+      require('electron').shell.openExternal('https://github.com/hundredrabbits/Left');
     },
-    accelerator: 'CmdOrCtrl+,'
+    accelerator: 'CmdOrCtrl+,',
   },
   {
     mode: 'insert',
     cat: '*',
     label: 'Fullscreen',
     fn: () => {
-      app.toggleFullscreen()
+      app.toggleFullscreen();
     },
-    accelerator: 'CmdOrCtrl+Enter'
+    accelerator: 'CmdOrCtrl+Enter',
   },
   {
     mode: 'insert',
     cat: '*',
     label: 'Hide',
     fn: () => {
-      app.toggleVisible()
+      app.toggleVisible();
     },
-    accelerator: 'CmdOrCtrl+H'
+    accelerator: 'CmdOrCtrl+H',
   },
   {
     mode: 'insert',
     cat: '*',
     label: 'Reset',
     fn: () => {
-      left.theme.reset()
+      left.theme.reset();
     },
-    accelerator: 'CmdOrCtrl+Backspace'
+    accelerator: 'CmdOrCtrl+Backspace',
   },
   {
     mode: 'insert',
     cat: '*',
     label: 'Quit',
     fn: () => {
-      left.project.quit()
+      left.project.quit();
     },
-    accelerator: 'CmdOrCtrl+Q'
+    accelerator: 'CmdOrCtrl+Q',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'Date',
     fn: () => {
-      left.insert.date()
+      left.insert.date();
     },
-    accelerator: 'CmdOrCtrl+D'
+    accelerator: 'CmdOrCtrl+D',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'Time',
     fn: () => {
-      left.insert.time()
+      left.insert.time();
     },
-    accelerator: 'CmdOrCtrl+T'
+    accelerator: 'CmdOrCtrl+T',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'Path',
     fn: () => {
-      left.insert.path()
+      left.insert.path();
     },
-    accelerator: 'CmdOrCtrl+P'
+    accelerator: 'CmdOrCtrl+P',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'Header',
     fn: () => {
-      left.insert.header()
+      left.insert.header();
     },
-    accelerator: 'CmdOrCtrl+H'
+    accelerator: 'CmdOrCtrl+H',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'SubHeader',
     fn: () => {
-      left.insert.subheader()
+      left.insert.subheader();
     },
-    accelerator: 'CmdOrCtrl+Shift+H'
+    accelerator: 'CmdOrCtrl+Shift+H',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'Comment',
     fn: () => {
-      left.insert.comment()
+      left.insert.comment();
     },
-    accelerator: 'CmdOrCtrl+/'
+    accelerator: 'CmdOrCtrl+/',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'Line',
     fn: () => {
-      left.insert.line()
+      left.insert.line();
     },
-    accelerator: 'CmdOrCtrl+L'
+    accelerator: 'CmdOrCtrl+L',
   },
   {
     mode: 'insert',
     cat: 'Insert',
     label: 'List',
     fn: () => {
-      left.insert.list()
+      left.insert.list();
     },
-    accelerator: 'CmdOrCtrl+-'
+    accelerator: 'CmdOrCtrl+-',
   },
   {
     mode: 'insert',
     cat: 'Mode',
     label: 'Stop',
     fn: () => {
-      left.insert.stop()
+      left.insert.stop();
     },
-    accelerator: 'Esc'
+    accelerator: 'Esc',
   },
   {
     mode: 'operator',
     cat: 'Find',
     label: 'Find',
     fn: () => {
-      left.operator.start('find: ')
+      left.operator.start('find: ');
     },
-    accelerator: 'CmdOrCtrl+F'
+    accelerator: 'CmdOrCtrl+F',
   },
   {
     mode: 'operator',
     cat: 'Find',
     label: 'Find Next',
     fn: () => {
-      left.operator.find_next()
+      left.operator.find_next();
     },
-    accelerator: 'CmdOrCtrl+N'
+    accelerator: 'CmdOrCtrl+N',
   },
   {
     mode: 'operator',
     cat: 'Operator',
     label: 'Stop',
     fn: () => {
-      left.operator.stop()
+      left.operator.stop();
     },
-    accelerator: 'Esc'
-  }
-]
+    accelerator: 'Esc',
+  },
+];
 
 const roles = [
   { mode: 'default', cat: '*', label: 'reload' },
@@ -585,7 +578,7 @@ const roles = [
   { mode: 'operator', cat: 'Edit', label: 'copy' },
   { mode: 'operator', cat: 'Edit', label: 'paste' },
   { mode: 'operator', cat: 'Edit', label: 'delete' },
-  { mode: 'operator', cat: 'Edit', label: 'selectall' }
-]
+  { mode: 'operator', cat: 'Edit', label: 'selectall' },
+];
 
-export { controls, roles }
+export { controls, roles, spacers };

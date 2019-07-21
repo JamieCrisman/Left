@@ -1,11 +1,9 @@
-const { app, BrowserWindow, webFrame, Menu } = require('electron')
-const path = require('path')
-const url = require('url')
-const shell = require('electron').shell
+const { app, BrowserWindow, Menu } = require('electron');
+const path = require('path');
 
-let isShown = true
+let isShown = true;
 
-app.win = null
+app.win = null;
 
 app.on('ready', () => {
   app.win = new BrowserWindow({
@@ -14,75 +12,73 @@ app.on('ready', () => {
     minWidth: 310,
     minHeight: 350,
     backgroundColor: '#000',
-    icon:
-      __dirname +
-        '/' +
-        { darwin: 'icon.icns', linux: 'icon.png', win32: 'icon.ico' }[process.platform] ||
-      'icon.ico',
+    icon: path.join(
+      __dirname,
+      { darwin: 'icon.icns', linux: 'icon.png', win32: 'icon.ico' }[process.platform] || 'icon.ico',
+    ),
     resizable: true,
     frame: process.platform !== 'darwin',
     skipTaskbar: process.platform === 'darwin',
     autoHideMenuBar: process.platform === 'darwin',
-    webPreferences: { zoomFactor: 1.0 },
-    webPreferences: { backgroundThrottling: false }
-  })
+    webPreferences: { zoomFactor: 1.0, nodeIntegration: true, backgroundThrottling: false },
+  });
 
-  app.win.loadURL(`file://${__dirname}/index.html`)
+  app.win.loadURL(`file://${__dirname}/index.html`);
 
   app.win.on('closed', () => {
-    win = null
-    app.quit()
-  })
+    win = null;
+    app.quit();
+  });
 
-  app.win.on('hide', function () {
-    isShown = false
-  })
+  app.win.on('hide', function() {
+    isShown = false;
+  });
 
-  app.win.on('show', function () {
-    isShown = true
-  })
+  app.win.on('show', function() {
+    isShown = true;
+  });
 
   app.on('window-all-closed', () => {
-    app.quit()
-  })
+    app.quit();
+  });
 
   app.on('activate', () => {
     if (app.win === null) {
-      createWindow()
+      createWindow();
     } else {
-      app.win.show()
+      app.win.show();
     }
-  })
-})
+  });
+});
 
-app.inspect = function () {
-  app.win.toggleDevTools()
-}
+app.inspect = function() {
+  app.win.toggleDevTools();
+};
 
-app.toggleFullscreen = function () {
-  app.win.setFullScreen(!app.win.isFullScreen())
-}
+app.toggleFullscreen = function() {
+  app.win.setFullScreen(!app.win.isFullScreen());
+};
 
-app.toggleVisible = function () {
+app.toggleVisible = function() {
   if (process.platform === 'darwin') {
     if (isShown && !app.win.isFullScreen()) {
-      app.win.hide()
+      app.win.hide();
     } else {
-      app.win.show()
+      app.win.show();
     }
   } else {
     if (!app.win.isMinimized()) {
-      app.win.minimize()
+      app.win.minimize();
     } else {
-      app.win.restore()
+      app.win.restore();
     }
   }
-}
+};
 
-app.injectMenu = function (menu) {
+app.injectMenu = function(menu) {
   try {
-    Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
+    Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
   } catch (err) {
-    console.warn('Cannot inject menu.')
+    console.warn('Cannot inject menu.');
   }
-}
+};

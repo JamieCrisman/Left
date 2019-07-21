@@ -38,7 +38,7 @@ You can quickly insert or transform text by activating the Insert Mode with <c-i
 - <c-/> : Comment
 - <c-l> : Line
 
-## Sources
+## Extras
 
 View sources: https://github.com/hundredrabbits/left
 
@@ -49,7 +49,7 @@ Download additional themes: http://hundredrabbits.itch.io/Left
   )
 
   this.name = function () {
-    return 'splash'
+    return 'Splash'
   }
 
   this.has_changes = function () {

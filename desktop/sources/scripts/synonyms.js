@@ -12003,19 +12003,14 @@ export const SYN_DB = {
     'annihilate',
     'excise'
   ],
-  esteem: [
-    //! !
-    'cherish',
-    'encourage',
-    'instill',
-    'propagate',
-    'implant',
-    'inculcate',
-    'inspire',
-    'foster'
+  'erase': [
+    'efface',
+    'expunge',
+    'cancel',
+    'obliterate',
+    'scratchout'
   ],
-  erase: ['efface', 'expunge', 'cancel', 'obliterate', 'scratchout'],
-  erect: [
+  'erect': [
     'upright',
     'standing',
     'elevated',
@@ -17060,15 +17055,7 @@ export const SYN_DB = {
     'secure',
     'gain'
   ],
-  relinquish: [
-    //! !
-    'abandon',
-    'lose',
-    'forfeit',
-    'surrender',
-    'forego'
-  ],
-  ghastly: [
+  'ghastly': [
     'pale',
     'wan',
     'cadaverous',
